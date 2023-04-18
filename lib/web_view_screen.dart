@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 
 class WebViewScreen extends StatefulWidget {
@@ -28,25 +29,33 @@ class _WebViewScreen extends State<WebViewScreen> {
           Expanded(
             child: InAppWebView(
               key: webViewKey,
-              initialUrlRequest: URLRequest(url: (Uri.parse(widget.link ?? "www.google.com"))),
-              // initialSettings: InAppWebViewSettings(
-              //     javaScriptCanOpenWindowsAutomatically: true,
-              //     supportMultipleWindows: true
-              // ),
-              initialOptions: InAppWebViewGroupOptions(
-                  crossPlatform: InAppWebViewOptions(
-                    javaScriptCanOpenWindowsAutomatically: true,
-                    mediaPlaybackRequiresUserGesture: false,
-                  ),
-                  ios: IOSInAppWebViewOptions(
-                    allowsInlineMediaPlayback: true,
-                  ),
-
-                  android: AndroidInAppWebViewOptions(
-
-                    supportMultipleWindows: true,
-                  )
+              onPermissionRequest: (controller, request) async {
+                await Permission.camera.request();
+                print(request.resources);
+                return PermissionResponse(
+                    resources: request.resources,
+                    action: PermissionResponseAction.GRANT);
+              },
+              initialUrlRequest: URLRequest(url: (WebUri(widget.link ?? "www.google.com"))),
+              initialSettings: InAppWebViewSettings(
+                  javaScriptCanOpenWindowsAutomatically: true,
+                  supportMultipleWindows: true,
+                  useHybridComposition: true,
+                  mediaPlaybackRequiresUserGesture: false,
+                  allowsInlineMediaPlayback: true
               ),
+              // initialOptions: InAppWebViewGroupOptions(
+              //     crossPlatform: InAppWebViewOptions(
+              //       javaScriptCanOpenWindowsAutomatically: true,
+              //       mediaPlaybackRequiresUserGesture: false,
+              //     ),
+              //     ios: IOSInAppWebViewOptions(
+              //       allowsInlineMediaPlayback: true,
+              //     ),
+              //     android: AndroidInAppWebViewOptions(
+              //       supportMultipleWindows: true,
+              //     )
+              // ),
               onWebViewCreated: (controller) {
                 webViewController = controller;
               },

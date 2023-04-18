@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:sample_web_view_app/web_view_screen.dart';
 
 void main() async {
@@ -9,7 +10,7 @@ void main() async {
       defaultTargetPlatform == TargetPlatform.android) {
     //await InAppWebViewController.setWebContentsDebuggingEnabled(kDebugMode);
   }
-  //await Permission.camera.request();
+
   runApp(const SampleWebViewApp());
 }
 
