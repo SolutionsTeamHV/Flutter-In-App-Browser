@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-
 class WebViewScreen extends StatefulWidget {
   final String? link;
 
-  const WebViewScreen(this.link, {Key? key}) : super(key: key);
+  const WebViewScreen({
+    this.link,
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<WebViewScreen> createState() => _WebViewScreen();
@@ -22,40 +24,46 @@ class _WebViewScreen extends State<WebViewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text("Popup Window"),
-        ),
-        body: Column(children: <Widget>[
+      appBar: AppBar(
+        title: const Text('Webview Popup window'),
+        backgroundColor: const Color.fromRGBO(85, 78, 241, 1),
+      ),
+      body: Column(
+        children: <Widget>[
           Expanded(
             child: InAppWebView(
               key: webViewKey,
               onPermissionRequest: (controller, request) async {
                 await Permission.camera.request();
-                print(request.resources);
+                await Permission.microphone.request();
+                debugPrint('request.resources: ${request.resources}');
                 return PermissionResponse(
-                    resources: request.resources,
-                    action: PermissionResponseAction.GRANT);
+                  resources: request.resources,
+                  action: PermissionResponseAction.GRANT,
+                );
               },
-              initialUrlRequest: URLRequest(url: (WebUri(widget.link ?? "www.google.com"))),
-              initialSettings: InAppWebViewSettings(
-                  javaScriptCanOpenWindowsAutomatically: true,
-                  supportMultipleWindows: true,
-                  useHybridComposition: true,
-                  mediaPlaybackRequiresUserGesture: false,
-                  allowsInlineMediaPlayback: true
+              initialUrlRequest: URLRequest(
+                url: WebUri(widget.link ?? 'www.hyperverge.co'),
               ),
-              // initialOptions: InAppWebViewGroupOptions(
-              //     crossPlatform: InAppWebViewOptions(
-              //       javaScriptCanOpenWindowsAutomatically: true,
-              //       mediaPlaybackRequiresUserGesture: false,
-              //     ),
-              //     ios: IOSInAppWebViewOptions(
-              //       allowsInlineMediaPlayback: true,
-              //     ),
-              //     android: AndroidInAppWebViewOptions(
-              //       supportMultipleWindows: true,
-              //     )
-              // ),
+              initialSettings: InAppWebViewSettings(
+                javaScriptCanOpenWindowsAutomatically: true,
+                supportMultipleWindows: true,
+                useHybridComposition: true,
+                mediaPlaybackRequiresUserGesture: false,
+                allowsInlineMediaPlayback: true,
+              ),
+              /*initialOptions: InAppWebViewGroupOptions(
+                  crossPlatform: InAppWebViewOptions(
+                    javaScriptCanOpenWindowsAutomatically: true,
+                    mediaPlaybackRequiresUserGesture: false,
+                  ),
+                  ios: IOSInAppWebViewOptions(
+                    allowsInlineMediaPlayback: true,
+                  ),
+                  android: AndroidInAppWebViewOptions(
+                    supportMultipleWindows: true,
+                  )
+              ),*/
               onWebViewCreated: (controller) {
                 webViewController = controller;
               },
@@ -70,7 +78,9 @@ class _WebViewScreen extends State<WebViewScreen> {
               },
             ),
           ),
-        ]));
+        ],
+      ),
+    );
   }
 }
 
@@ -98,22 +108,25 @@ class _WindowPopupState extends State<WindowPopup> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Row(mainAxisSize: MainAxisSize.max, children: [
-                  Expanded(
-                    child:
-                    Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
-                  ),
-                  IconButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: const Icon(Icons.close))
-                ]),
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Expanded(
+                      child: Text(title,
+                          maxLines: 1, overflow: TextOverflow.ellipsis),
+                    ),
+                    IconButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        icon: const Icon(Icons.close))
+                  ],
+                ),
                 Expanded(
                   child: InAppWebView(
                     gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
                       Factory<OneSequenceGestureRecognizer>(
-                            () => EagerGestureRecognizer(),
+                        () => EagerGestureRecognizer(),
                       ),
                     },
                     windowId: widget.createWindowAction.windowId,
@@ -134,7 +147,7 @@ class _WindowPopupState extends State<WindowPopup> {
             width: MediaQuery.of(context).size.width,
             color: Colors.white,
             height: 75,
-          )
+          ),
         ],
       ),
     );
