@@ -19,7 +19,7 @@ class WebViewScreen extends StatefulWidget {
 class _WebViewScreen extends State<WebViewScreen> {
   final GlobalKey webViewKey = GlobalKey();
 
-  InAppWebViewController? webViewController;
+  //InAppWebViewController? webViewController;
 
   @override
   Widget build(BuildContext context) {
@@ -33,28 +33,29 @@ class _WebViewScreen extends State<WebViewScreen> {
           Expanded(
             child: InAppWebView(
               key: webViewKey,
-              onPermissionRequest: (controller, request) async {
-                await Permission.camera.request();
-                await Permission.microphone.request();
-                debugPrint('request.resources: ${request.resources}');
-                return PermissionResponse(
-                  resources: request.resources,
-                  action: PermissionResponseAction.GRANT,
-                );
-              },
+              // onPermissionRequest: (controller, request) async {
+              //   await Permission.camera.request();
+              //   await Permission.microphone.request();
+              //   debugPrint('request.resources: ${request.resources}');
+              //   return PermissionResponse(
+              //     resources: request.resources,
+              //     action: PermissionResponseAction.GRANT,
+              //   );
+              // },
               initialUrlRequest: URLRequest(
-                url: WebUri(widget.link ?? 'www.hyperverge.co'),
+                url: Uri.parse(widget.link ?? 'www.hyperverge.co'),
               ),
-              initialSettings: InAppWebViewSettings(
-                javaScriptCanOpenWindowsAutomatically: true,
-                supportMultipleWindows: true,
-                useHybridComposition: true,
-                mediaPlaybackRequiresUserGesture: false,
-                allowsInlineMediaPlayback: true,
-              ),
-              /*initialOptions: InAppWebViewGroupOptions(
+              // initialSettings: InAppWebViewSettings(
+              //   javaScriptCanOpenWindowsAutomatically: true,
+              //   supportMultipleWindows: true,
+              //   useHybridComposition: true,
+              //   mediaPlaybackRequiresUserGesture: false,
+              //   allowsInlineMediaPlayback: true,
+              // ),
+              initialOptions: InAppWebViewGroupOptions(
                   crossPlatform: InAppWebViewOptions(
-                    javaScriptCanOpenWindowsAutomatically: true,
+                    useShouldOverrideUrlLoading: true,
+                    //javaScriptCanOpenWindowsAutomatically: true,
                     mediaPlaybackRequiresUserGesture: false,
                   ),
                   ios: IOSInAppWebViewOptions(
@@ -63,19 +64,19 @@ class _WebViewScreen extends State<WebViewScreen> {
                   android: AndroidInAppWebViewOptions(
                     supportMultipleWindows: true,
                   )
-              ),*/
-              onWebViewCreated: (controller) {
-                webViewController = controller;
-              },
-              onCreateWindow: (controller, createWindowAction) async {
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return WindowPopup(createWindowAction: createWindowAction);
-                  },
-                );
-                return true;
-              },
+              ),
+              // onWebViewCreated: (controller) {
+              //   webViewController = controller;
+              // },
+              // onCreateWindow: (controller, createWindowAction) async {
+              //   showDialog(
+              //     context: context,
+              //     builder: (context) {
+              //       return WindowPopup(createWindowAction: createWindowAction);
+              //     },
+              //   );
+              //   return true;
+              // },
             ),
           ),
         ],
