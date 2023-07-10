@@ -31,6 +31,9 @@ class _WebViewScreen extends State<WebViewScreen> {
         children: <Widget>[
           Expanded(
             child: InAppWebView(
+              androidOnPermissionRequest: (controller, origin, resources) async {
+                return PermissionRequestResponse(resources: resources, action: PermissionRequestResponseAction.GRANT);
+              },
               key: webViewKey,
               androidOnPermissionRequest: (InAppWebViewController controller, String origin, List<String> resources) async {
                 await Permission.camera.request();
@@ -61,12 +64,15 @@ class _WebViewScreen extends State<WebViewScreen> {
                     useShouldOverrideUrlLoading: true,
                     //javaScriptCanOpenWindowsAutomatically: true,
                     mediaPlaybackRequiresUserGesture: false,
+                    // userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
+                    userAgent: 'Dart/2.16 (dart:io)',
                   ),
                   ios: IOSInAppWebViewOptions(
                     allowsInlineMediaPlayback: true,
                   ),
                   android: AndroidInAppWebViewOptions(
-                    supportMultipleWindows: true,
+                    // supportMultipleWindows: true,
+                    useHybridComposition: true,
                   )
               ),
               // onWebViewCreated: (controller) {
