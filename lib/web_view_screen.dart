@@ -19,7 +19,6 @@ class WebViewScreen extends StatefulWidget {
 class _WebViewScreen extends State<WebViewScreen> {
   final GlobalKey webViewKey = GlobalKey();
 
-  //InAppWebViewController? webViewController;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +32,11 @@ class _WebViewScreen extends State<WebViewScreen> {
           Expanded(
             child: InAppWebView(
               key: webViewKey,
+              androidOnPermissionRequest: (InAppWebViewController controller, String origin, List<String> resources) async {
+                await Permission.camera.request();
+                await Permission.microphone.request();
+                return PermissionRequestResponse(resources: resources, action: PermissionRequestResponseAction.GRANT);
+              },
               // onPermissionRequest: (controller, request) async {
               //   await Permission.camera.request();
               //   await Permission.microphone.request();

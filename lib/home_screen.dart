@@ -1,4 +1,6 @@
+import 'package:fk_user_agent/fk_user_agent.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sample_web_view_app/web_view_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -16,6 +18,28 @@ class _HomeScreenState extends State<HomeScreen> {
   final textFieldColor = const Color.fromRGBO(85, 78, 241, 0.15);
   final colorForOutline = const Color.fromRGBO(85, 78, 241, 0.5);
 
+  var webViewUserAgent = "";
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) async {
+      await FkUserAgent.init();
+      initPlatformState();
+    });
+  }
+
+  // Platform messages are asynchronous, so we initialize in an async method.
+  Future<void> initPlatformState() async {
+    try {
+      setState(() {
+        webViewUserAgent = FkUserAgent.webViewUserAgent!;
+      });
+    } on PlatformException {
+      webViewUserAgent = 'Failed to get user agent.';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,6 +54,12 @@ class _HomeScreenState extends State<HomeScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: Text(
+                  webViewUserAgent
+                ),
+              ),
               TextField(
                 controller: linkController,
                 cursorColor: buttonColor,
