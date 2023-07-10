@@ -31,9 +31,6 @@ class _WebViewScreen extends State<WebViewScreen> {
         children: <Widget>[
           Expanded(
             child: InAppWebView(
-              androidOnPermissionRequest: (controller, origin, resources) async {
-                return PermissionRequestResponse(resources: resources, action: PermissionRequestResponseAction.GRANT);
-              },
               key: webViewKey,
               androidOnPermissionRequest: (InAppWebViewController controller, String origin, List<String> resources) async {
                 await Permission.camera.request();
