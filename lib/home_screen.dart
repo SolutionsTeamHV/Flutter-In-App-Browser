@@ -1,8 +1,7 @@
 import 'package:fk_user_agent/fk_user_agent.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sample_web_view_app/web_view_screen.dart';
-
+import 'package:flutter_web_browser/flutter_web_browser.dart';
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -27,6 +26,10 @@ class _HomeScreenState extends State<HomeScreen> {
       await FkUserAgent.init();
       initPlatformState();
     });
+  }
+
+  Future<void> openBrowserTab(String link) async {
+    await FlutterWebBrowser.openWebPage(url: link);
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
@@ -99,14 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: 50,
               ),
               MaterialButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          WebViewScreen(link: linkController.text),
-                    ),
-                  );
-                },
+                onPressed: () => openBrowserTab(linkController.text),
                 height: 48.0,
                 color: const Color.fromRGBO(85, 78, 241, 1),
                 shape: const RoundedRectangleBorder(
